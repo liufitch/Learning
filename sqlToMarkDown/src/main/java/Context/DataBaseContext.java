@@ -1,6 +1,9 @@
 package Context;
 
 import common.Database;
+import entity.TableEntity;
+
+import java.util.List;
 
 public class DataBaseContext {
     private Database database;
@@ -15,5 +18,12 @@ public class DataBaseContext {
 
     public String queryAllTable(){
         return database.queryAllTable();
+    }
+
+    public String descTable(String tableName){
+        return database.descTable(tableName);
+    }
+    public List<TableEntity> buildTable(List<String> list){
+        return database.buildTable(list);
     }
 }

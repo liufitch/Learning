@@ -2,14 +2,12 @@ package common.File;
 
 import Context.SQLExecute;
 import Exceptions.FileRelativeException;
+import entity.TableEntity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -111,4 +109,51 @@ public class FileInfo {
             return map;
         }
     }
+
+    public void writeFileAppend(List<String> sql, String pathName){
+        try{
+            Path path = Paths.get(pathName);
+            Files.write(path, sql, StandardOpenOption.APPEND);
+
+        }catch (NoSuchFileException e){
+            try{
+                createFile(pathName);
+                Path path = Paths.get(pathName);
+                Files.write(path, sql, StandardOpenOption.APPEND);
+            }catch (FileRelativeException | IOException e1){
+                e.printStackTrace();
+            }
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void serializeTableEntity(List<TableEntity> list,String pathName){
+        FileOutputStream fos = null;
+        PrintStream out1 = null;
+        try{
+
+            for(int i=0;i<list.size();i++){
+                File file = new File(pathName);
+                fos = new FileOutputStream(file, true);
+                // 创建FileOutputStream对应的PrintStream，方便操作。PrintStream的写入接口更便利
+                out1 = new PrintStream(fos);
+
+                out1.print( list.get(i).toString()+"\r\n");
+                out1.close();
+            }
+        }catch ( IOException e){
+            e.printStackTrace();
+        }finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }

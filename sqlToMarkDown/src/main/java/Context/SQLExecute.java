@@ -70,7 +70,6 @@ public class SQLExecute {
 
             //Field Type Null Key Default  Extra
             String tableName = null;
-            String createStatement = null;
             while (resultSet.next()){
                 tableNameList.add(resultSet.getString(1));
             }
@@ -81,5 +80,35 @@ public class SQLExecute {
         return tableNameList;
 
     }
+
+    public Map<String, String> getTableCreateStatement(String sql){
+        Map<String, String> map = new HashMap<>();
+        try {
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()){
+                map.put(resultSet.getString(1), resultSet.getString(2));
+            }
+            resultSet.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return map;
+
+    }
+
+    public void descTableExec(String sql){
+        try {
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()){
+                System.out.println(resultSet.getString("1"));
+            }
+            resultSet.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
 }
