@@ -24,4 +24,20 @@ public class Util {
         return null;
 
     }
+
+    public static void nullToEmpty(Object obj){
+       for (Field field : obj.getClass().getDeclaredFields()){
+           field.setAccessible(true);
+           try {
+               if(field.get(obj) == null){
+                field.set(obj, "");
+               }
+           }catch (IllegalAccessException e){
+                e.printStackTrace();
+           }
+
+       }
+
+    }
+
 }

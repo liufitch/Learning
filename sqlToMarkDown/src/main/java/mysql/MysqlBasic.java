@@ -1,16 +1,11 @@
 package mysql;
 
-import com.mysql.cj.util.StringUtils;
 import common.Database;
 import common.Util;
 import constants.Constants;
 import entity.TableEntity;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +67,8 @@ public class MysqlBasic implements Database {
         TableEntity tableEntity = new TableEntity();
         int index =0;
         if(p.indexOf("PRIMARY KEY")>-1){
-            String keyField = p.substring(p.indexOf("("),p.lastIndexOf(")"));
-            if(!StringUtils.isEmptyOrWhitespaceOnly(map.get(keyField))){
+            String keyField = p.substring(p.indexOf("(")+1,p.lastIndexOf(")"));
+            if(map.get(keyField) !=null && map.get(keyField).trim() !=""){
                 tableEntity = entityList.stream().filter(m->m.getField().equals(keyField)).findFirst().get();
                 tableEntity.setPrimaryKey(Constants.PrimaryKey);
             }
@@ -91,12 +86,12 @@ public class MysqlBasic implements Database {
             tableEntity.setComment(p.substring(index+9, index+9+endIndex));
         }
 
-        if( p.indexOf("DEFAULT NULL")>-1){
+        if( p.indexOf("DEFAULT NULL")>-1 || p.indexOf("DEFAULT") ==-1){
             tableEntity.setDefaultValue(Constants.DefaultValue);
         }else{
             index =p.indexOf("DEFAULT");
-            int endIndex =p.substring(index+10).indexOf("'");
-            tableEntity.setDefaultValue(p.substring(index+10, index+10+endIndex));
+            int endIndex =p.substring(index+9).indexOf("'");
+                 tableEntity.setDefaultValue(p.substring(index+9, index+9+endIndex));
         }
 
         if(p.indexOf("NOT NULL")>-1){
@@ -106,7 +101,7 @@ public class MysqlBasic implements Database {
         }
 
         if(p.indexOf("AUTO_INCREMENT") >-1){
-            tableEntity.setExtra(tableEntity.getExtra()+ Constants.AutoIn +" ");
+            tableEntity.setExtra(tableEntity.getExtra()==null ? Constants.AutoIn +" ":tableEntity.getExtra() + Constants.AutoIn +" ");
         }
         entityList.add(tableEntity);
     }

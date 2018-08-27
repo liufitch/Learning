@@ -7,7 +7,7 @@ public class Constants {
 
     public static String AutoIn="自增";
 
-    public static String DefaultValue ="无";
+    public static String DefaultValue ="";
 
     public static String PrimaryKey ="是";
 

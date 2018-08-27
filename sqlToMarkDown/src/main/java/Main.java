@@ -14,6 +14,8 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static common.Util.nullToEmpty;
+
 
 public class Main {
 
@@ -33,27 +35,33 @@ public class Main {
             sqlExecute.connectDatabase();
 
             List<String> tableNameList = sqlExecute.getTableNameList(sql);
+            tableNameList.forEach(m->{
 
-            String createTableSql = context.getTableCreateSql("home_page_banner");
-
-
-            Map<String, String> map = sqlExecute.getTableCreateStatement(createTableSql);
-            String createStatement = map.get("home_page_banner");
-            int end = createStatement.lastIndexOf(")");
-            int start = createStatement.indexOf("(");
-            String middleStatement = createStatement.substring(start+1, end);
-            System.out.println(middleStatement);
-            String[] fieldStatement = middleStatement.replace("`","").replace("\n","").split(",");
-            List<String> list = Arrays.asList(fieldStatement).stream().map(p ->p.trim()).collect(Collectors.toList());
-
-            List<TableEntity> buildTableList = context.buildTable(list);
+                String createTableSql = context.getTableCreateSql(m);
 
 
-            //create file
-            FileInfo fileInfo = FileInfo.getInstance();
-            String pathName = fileInfo.readPropertiesFilePathName();
-            //write class to file
-            fileInfo.serializeTableEntity(buildTableList, pathName);
+                Map<String, String> map = sqlExecute.getTableCreateStatement(createTableSql);
+                String createStatement = map.get(m);
+                int end = createStatement.lastIndexOf(")");
+                int start = createStatement.indexOf("(");
+                String middleStatement = createStatement.substring(start+1, end);
+                System.out.println(middleStatement);
+                String[] fieldStatement = middleStatement.replace("`","").replace("\n","").split(",");
+                List<String> list = Arrays.asList(fieldStatement).stream().map(p ->p.trim()).collect(Collectors.toList());
+
+                List<TableEntity> buildTableList = context.buildTable(list);
+
+                for(int i=0; i< buildTableList.size(); i++){
+                    nullToEmpty(buildTableList.get(i));
+                }
+                //create file
+                FileInfo fileInfo = FileInfo.getInstance();
+                String pathName = fileInfo.readPropertiesFilePathName();
+                //write class to file
+                fileInfo.serializeTableEntity(buildTableList, pathName, m);
+            });
+
+
 
 //            fileInfo.writeFileAppend(list, pathName);
 
