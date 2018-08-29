@@ -6,10 +6,8 @@ import constants.Constants;
 import entity.TableEntity;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static common.Util.getMethodInvoke;
 
@@ -63,7 +61,19 @@ public class MysqlBasic implements Database {
         entityList.add(titleLine);
     }
 
-    public void createField(String p,List<TableEntity> entityList, Map<String, String> map){
+    @Override
+    public List<String> getFieldStatement(String sqlStatement) {
+        int end = sqlStatement.lastIndexOf(")");
+        int start = sqlStatement.indexOf("(");
+        String middleStatement = sqlStatement.substring(start+1, end);
+
+
+        String[] fieldStatement = middleStatement.replace("`","").replace("\n","").split(",");
+        List<String> list = Arrays.asList(fieldStatement).stream().map(p ->p.trim()).collect(Collectors.toList());
+        return list;
+    }
+
+    public void createField(String p, List<TableEntity> entityList, Map<String, String> map){
         TableEntity tableEntity = new TableEntity();
         int index =0;
         if(p.indexOf("PRIMARY KEY")>-1){
@@ -104,6 +114,7 @@ public class MysqlBasic implements Database {
             tableEntity.setExtra(tableEntity.getExtra()==null ? Constants.AutoIn +" ":tableEntity.getExtra() + Constants.AutoIn +" ");
         }
         entityList.add(tableEntity);
+
     }
 
     public Map<String, String> enSurePrimaryKey(TableEntity entity){

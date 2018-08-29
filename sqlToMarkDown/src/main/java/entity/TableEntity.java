@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class TableEntity implements Serializable {
+public class TableEntity implements Serializable  {
 
     private String field;
 

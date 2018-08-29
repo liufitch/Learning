@@ -9,4 +9,5 @@ public interface Database {
     String queryAllTable();
     String descTable(String tableName);
     List<TableEntity> buildTable(List<String> list);
+    List<String> getFieldStatement(String sqlStatement);
 }

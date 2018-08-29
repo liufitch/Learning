@@ -26,4 +26,7 @@ public class DataBaseContext {
     public List<TableEntity> buildTable(List<String> list){
         return database.buildTable(list);
     }
+    public List<String> getFieldStatement(String sqlStatement){
+        return database.getFieldStatement(sqlStatement);
+    }
 }

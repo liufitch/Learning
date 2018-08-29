@@ -132,6 +132,7 @@ public class FileInfo {
     public void serializeTableEntity(List<TableEntity> list,String pathName, String tableName){
         FileOutputStream fos = null;
         PrintStream out1 = null;
+
         try{
             File file = new File(pathName);
             fos = new FileOutputStream(file, true);

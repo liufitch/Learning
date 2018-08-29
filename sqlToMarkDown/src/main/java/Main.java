@@ -1,18 +1,10 @@
 import Context.DataBaseContext;
 import Context.SQLExecute;
-import Exceptions.FileRelativeException;
 import common.Database;
 import common.File.FileInfo;
-import common.Util;
-import constants.Constants;
 import entity.TableEntity;
 import mysql.MysqlBasic;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static common.Util.nullToEmpty;
 
@@ -41,15 +33,10 @@ public class Main {
 
 
                 Map<String, String> map = sqlExecute.getTableCreateStatement(createTableSql);
-                String createStatement = map.get(m);
-                int end = createStatement.lastIndexOf(")");
-                int start = createStatement.indexOf("(");
-                String middleStatement = createStatement.substring(start+1, end);
-                System.out.println(middleStatement);
-                String[] fieldStatement = middleStatement.replace("`","").replace("\n","").split(",");
-                List<String> list = Arrays.asList(fieldStatement).stream().map(p ->p.trim()).collect(Collectors.toList());
+                List<String> list = context.getFieldStatement(map.get(m));
 
                 List<TableEntity> buildTableList = context.buildTable(list);
+
 
                 for(int i=0; i< buildTableList.size(); i++){
                     nullToEmpty(buildTableList.get(i));
@@ -59,13 +46,14 @@ public class Main {
                 String pathName = fileInfo.readPropertiesFilePathName();
                 //write class to file
                 fileInfo.serializeTableEntity(buildTableList, pathName, m);
+
             });
 
 
-
+            System.out.println("end");
 //            fileInfo.writeFileAppend(list, pathName);
 
-
+//            System.out.println(new StringBuilder().append("开始插入表").append(name ).append("字段").append(field).toString());
 
         }catch (Exception  e){
             e.printStackTrace();

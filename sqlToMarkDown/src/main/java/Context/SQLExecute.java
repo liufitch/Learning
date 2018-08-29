@@ -2,13 +2,11 @@ package Context;
 
 import Exceptions.FileRelativeException;
 import common.File.FileInfo;
+import entity.TableEntity;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class SQLExecute {
@@ -96,6 +94,34 @@ public class SQLExecute {
         return map;
 
     }
+
+    public List<TableEntity> getResultSetBySql(String sql) {
+        List<TableEntity> list = new ArrayList<>();
+        try {
+            //https://docs.microsoft.com/en-us/sql/connect/jdbc/reference/getprimarykeys-method-sqlserverdatabasemetadata?view=sql-server-2017
+            //主键
+//            String primaryKey = con.getMetaData().getPrimaryKeys(conn.getCatalog(),null, tablename)
+            ResultSet rs = statement.executeQuery(sql);
+            ResultSetMetaData rsmd  = rs.getMetaData();
+            int count = rsmd.getColumnCount();
+
+
+
+            for(int i=1; i<=count; i++){
+                TableEntity tableEntity = new TableEntity();
+                tableEntity.setField(rsmd.getCatalogName(i));
+                tableEntity.setType(String.valueOf(rsmd.getColumnType(i)));
+//                tableEntity.setSnull(rsmd.));
+            }
+            rs.close();
+
+        } catch (Exception se) {
+            se.printStackTrace();
+        }
+        return null;
+    }
+
+
 
     public void descTableExec(String sql){
         try {
