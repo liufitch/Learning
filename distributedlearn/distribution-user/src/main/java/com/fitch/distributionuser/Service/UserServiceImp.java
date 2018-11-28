@@ -1,13 +1,16 @@
 package com.fitch.distributionuser.Service;
 
+
 import com.alibaba.dubbo.config.annotation.Service;
-import com.fitch.distributionuser.IService.IUserService;
 import com.fitch.distrubutionserver.Entity.LoginReq;
+import com.fitch.distrubutionserver.IService.IUserService;
+import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 
-@Service(version = "1.0.0")
+@Service(version = "${dubbo.service.version}")
 public class UserServiceImp implements IUserService {
-    @Override
-    public void login(LoginReq loginReq) {
 
+    @Override
+    public Boolean login(String userName, String encrytionPWD) {
+        return true;
     }
 }
